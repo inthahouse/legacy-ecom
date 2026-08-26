@@ -1,0 +1,31 @@
+<%- include('partials/head', { bodyClass: 'page-collections-index' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="page-title">Collections</h1>
+
+  <h2 class="section-title">Departments</h2>
+  <div class="dept-tiles collections-dept-tiles">
+    <% depts.forEach(function (d) { %>
+      <a class="dept-tile" href="/collections/<%= d.slug %>">
+        <span class="dept-tile-label">Shop <%= d.name %></span>
+      </a>
+    <% }) %>
+  </div>
+
+  <h2 class="section-title">Featured Collections</h2>
+  <div class="collection-cards">
+    <% groups.forEach(function (g) { %>
+    <a class="collection-card" href="/collections/<%= g.col.slug %>">
+      <% if (g.sample) { %><img src="<%= g.sample.variants[0].images[0] %>" alt="" loading="lazy"><% } %>
+      <div class="collection-card-info">
+        <h3><%= g.col.name %></h3>
+        <p><%= g.col.blurb %></p>
+        <span class="collection-card-count"><%= g.count %> products</span>
+      </div>
+    </a>
+    <% }) %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

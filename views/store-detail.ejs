@@ -1,0 +1,43 @@
+<%- include('partials/head', { bodyClass: 'page-store-detail' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a> <span>/</span>
+    <a href="/stores">Store Finder</a> <span>/</span>
+    <span class="bc-current"><%= store.city %></span>
+  </nav>
+
+  <h1 class="page-title"><%= store.name %></h1>
+  <% if (store.isFlagship) { %><span class="badge badge-best">Flagship Store</span><% } %>
+
+  <div class="store-detail-layout">
+    <div class="summary-box">
+      <h3>Address</h3>
+      <p class="confirm-address">
+        <%= store.address %><br>
+        <%= store.city %>, <%= store.region %> <%= store.postal %><br>
+        <%= store.countryName %>
+      </p>
+      <p><strong><%= store.phone %></strong></p>
+    </div>
+    <div class="summary-box">
+      <h3>Hours</h3>
+      <ul class="store-hours">
+        <% Object.keys(store.hours).forEach(function (k) { %>
+          <li><span><%= k %></span><span><%= store.hours[k] %></span></li>
+        <% }) %>
+      </ul>
+    </div>
+    <div class="summary-box">
+      <h3>Services</h3>
+      <ul class="store-services">
+        <% store.services.forEach(function (s) { %><li>&#10003; <%= s %></li><% }) %>
+      </ul>
+    </div>
+  </div>
+
+  <a class="btn btn-ghost" href="/stores">&larr; Back to all stores</a>
+</div>
+
+<%- include('partials/footer') %>

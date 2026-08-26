@@ -1,0 +1,95 @@
+<%
+/* cart drawer body - fetched from /api/cart-drawer and injected into
+   #cart-drawer-body by main.js. data-count keeps the header badge honest. */
+%>
+<div class="cart-drawer-inner" data-count="<%= cart.itemCount %>">
+  <% if (cart.lines.length === 0) { %>
+    <div class="cart-drawer-empty">
+      <p>Your cart is empty.</p>
+      <a class="btn btn-primary btn-block" href="/collections/new-arrivals">Start Shopping</a>
+      <a class="btn btn-ghost btn-block" href="/collections/best-sellers">Best Sellers</a>
+    </div>
+  <% } else { %>
+
+    <div class="cart-drawer-lines">
+      <% cart.lines.forEach(function (l) { %>
+      <% if (l.isGift) { %>
+      <div class="drawer-line drawer-line-gift">
+        <span class="drawer-line-thumb">
+          <img src="<%= l.variant.images[0] %>" alt="<%= l.product.title %>">
+        </span>
+        <div class="drawer-line-info">
+          <span class="badge badge-gift">Free Gift</span>
+          <span class="drawer-line-title"><%= l.product.shortName %></span>
+          <div class="drawer-line-meta"><%= l.variant.colorName %> / <%= l.size %> &middot; yours with orders over <%= fmt(cart.gift.threshold) %></div>
+          <div class="drawer-line-bottom">
+            <span class="drawer-gift-note">Added automatically</span>
+            <span class="drawer-line-price">
+              <span class="price price-free">FREE</span>
+              <span class="gift-value-strike"><%= fmt(l.product.value) %></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="drawer-line">
+        <a href="/products/<%= l.product.slug %>?color=<%= l.variant.colorSlug %>" class="drawer-line-thumb">
+          <img src="<%= l.variant.images[0] %>" alt="<%= l.product.title %>">
+        </a>
+        <div class="drawer-line-info">
+          <a class="drawer-line-title" href="/products/<%= l.product.slug %>?color=<%= l.variant.colorSlug %>"><%= l.product.title %></a>
+          <div class="drawer-line-meta"><%= l.variant.colorName %> / <%= l.size %></div>
+          <div class="drawer-line-bottom">
+            <div class="qty-stepper qty-stepper-sm" data-sku="<%= l.sku %>" data-qty="<%= l.qty %>">
+              <button type="button" class="qty-btn js-drawer-qty" data-delta="-1">&minus;</button>
+              <input type="text" value="<%= l.qty %>" readonly>
+              <button type="button" class="qty-btn js-drawer-qty" data-delta="1">+</button>
+            </div>
+            <span class="drawer-line-price">
+              <% if (l.compareAt) { %><span class="price price-sale"><%= fmt(l.lineTotal) %></span><% } else { %><span class="price"><%= fmt(l.lineTotal) %></span><% } %>
+            </span>
+          </div>
+        </div>
+        <button class="drawer-line-remove js-drawer-remove" data-sku="<%= l.sku %>" title="Remove" type="button">&times;</button>
+      </div>
+      <% } %>
+      <% }) %>
+    </div>
+
+    <div class="cart-drawer-foot">
+      <% if (cart.gift.inCart) { %>
+        <p class="drawer-gift is-earned">&#127873; Free gift unlocked &mdash; enjoy your <%= cart.gift.product.shortName %>!</p>
+      <% } else { %>
+        <p class="drawer-gift">&#127873; Only <strong><%= fmt(cart.gift.remaining) %></strong> away from a free <%= cart.gift.product.shortName %> (<%= fmt(cart.gift.product.value) %> value)</p>
+        <div class="drawer-freeship-bar drawer-gift-bar">
+          <span style="width: <%= cart.gift.progressPct %>%;"></span>
+        </div>
+      <% } %>
+
+      <% if (cart.freeShipRemaining > 0) { %>
+        <p class="drawer-freeship">Add <strong><%= fmt(cart.freeShipRemaining) %></strong> for free standard shipping</p>
+      <% } else { %>
+        <p class="drawer-freeship is-earned">&#10003; You've earned free standard shipping</p>
+      <% } %>
+      <div class="drawer-freeship-bar">
+        <span style="width: <%= Math.min(100, Math.round(((cart.subtotal - cart.discount) / 10000) * 100)) %>%;"></span>
+      </div>
+
+      <div class="drawer-subtotal">
+        <span>Subtotal (<%= cart.itemCount %> item<%= cart.itemCount === 1 ? '' : 's' %>)</span>
+        <strong><%= fmt(cart.subtotal) %></strong>
+      </div>
+      <% if (cart.discount > 0) { %>
+      <div class="drawer-discount">
+        <span>Discount (<%= cart.promoCode %>)</span>
+        <span>&minus;<%= fmt(cart.discount) %></span>
+      </div>
+      <% } %>
+      <p class="drawer-taxes-note">Shipping &amp; taxes calculated at checkout</p>
+
+      <a class="btn btn-primary btn-block btn-lg" href="/checkout">Checkout</a>
+      <a class="drawer-viewcart" href="/cart">View full cart &rarr;</a>
+    </div>
+
+  <% } %>
+</div>

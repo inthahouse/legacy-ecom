@@ -1,0 +1,59 @@
+<%
+/* order summary box - cart page + checkout. reloaded via /api/cart/summary */
+%>
+<div class="summary-box">
+  <h3>Order Summary</h3>
+  <div class="summary-row">
+    <span>Subtotal (<%= cart.itemCount %> item<%= cart.itemCount === 1 ? '' : 's' %>)</span>
+    <span><%= fmt(cart.subtotal) %></span>
+  </div>
+  <% if (cart.discount > 0) { %>
+  <div class="summary-row summary-discount">
+    <span>Discount (<%= cart.promoCode %>)</span>
+    <span>&minus;<%= fmt(cart.discount) %></span>
+  </div>
+  <% } %>
+  <div class="summary-row">
+    <span>Shipping<% if (cart.shippingMethod === 'express') { %> (Express)<% } %></span>
+    <span><%= cart.shipping === 0 ? 'FREE' : fmt(cart.shipping) %></span>
+  </div>
+  <div class="summary-row">
+    <span>Estimated Tax (HST 13%)</span>
+    <span><%= fmt(cart.tax) %></span>
+  </div>
+  <div class="summary-row summary-total">
+    <span>Total</span>
+    <span><%= fmt(cart.total) %></span>
+  </div>
+  <% if (currency === 'USD') { %>
+    <p class="summary-fx-note">Charged in CAD (<%= fmtCAD(cart.total) %>). USD shown at today's rate for reference.</p>
+  <% } %>
+  <% if (cart.freeShipRemaining > 0 && cart.shippingMethod !== 'express') { %>
+    <p class="summary-freeship">Add <%= fmt(cart.freeShipRemaining) %> more for free standard shipping.</p>
+  <% } %>
+  <% if (cart.gift && cart.lines.length) { %>
+    <% if (cart.gift.inCart) { %>
+      <p class="summary-gift is-earned">&#127873; Free gift included: <%= cart.gift.product.shortName %> (a <%= fmt(cart.gift.product.value) %> value)</p>
+    <% } else { %>
+      <p class="summary-gift">&#127873; Only <strong><%= fmt(cart.gift.remaining) %></strong> left to get a free <%= cart.gift.product.shortName %>.</p>
+    <% } %>
+  <% } %>
+
+  <% if (!checkoutMode) { %>
+    <a href="/checkout" class="btn btn-primary btn-block btn-lg summary-checkout-btn">Proceed to Checkout</a>
+    <form class="promo-form" action="/cart/promo" method="post">
+      <% if (cart.promoCode) { %>
+        <div class="promo-applied">
+          <span>Code <strong><%= cart.promoCode %></strong> applied</span>
+          <button formaction="/cart/promo/remove" type="submit" class="linklike">Remove</button>
+        </div>
+      <% } else { %>
+        <label for="promo-code">Promo code</label>
+        <div class="promo-row">
+          <input type="text" name="code" id="promo-code" placeholder="e.g. WELCOME10">
+          <button type="submit" class="btn btn-ghost">Apply</button>
+        </div>
+      <% } %>
+    </form>
+  <% } %>
+</div>

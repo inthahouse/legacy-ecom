@@ -1,0 +1,66 @@
+<%- include('partials/head', { bodyClass: 'page-contact' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="page-title">Contact Us</h1>
+
+  <div class="contact-layout">
+    <div class="contact-form-wrap">
+      <% if (errors && errors.length) { %>
+      <div class="form-errors"><ul><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul></div>
+      <% } %>
+
+      <form action="/contact" method="post" id="contact-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="ct-name">Name *</label>
+            <input type="text" id="ct-name" name="name" value="<%= form.name || '' %>" required>
+          </div>
+          <div class="form-field">
+            <label for="ct-email">Email *</label>
+            <input type="email" id="ct-email" name="email" value="<%= form.email || '' %>" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="ct-topic">Topic</label>
+          <select id="ct-topic" name="topic">
+            <option value="general" <%= form.topic === 'general' ? 'selected' : '' %>>General question</option>
+            <option value="order" <%= form.topic === 'order' ? 'selected' : '' %>>Order status</option>
+            <option value="returns" <%= form.topic === 'returns' ? 'selected' : '' %>>Returns &amp; exchanges</option>
+            <option value="wholesale" <%= form.topic === 'wholesale' ? 'selected' : '' %>>Wholesale inquiries</option>
+            <option value="press" <%= form.topic === 'press' ? 'selected' : '' %>>Press</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="ct-order">Order Number (if applicable)</label>
+          <input type="text" id="ct-order" name="orderNumber" placeholder="TNO-100xxx" value="<%= form.orderNumber || '' %>">
+        </div>
+        <div class="form-field">
+          <label for="ct-msg">Message *</label>
+          <textarea id="ct-msg" name="message" rows="6" required><%= form.message || '' %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+      </form>
+    </div>
+
+    <aside class="contact-aside">
+      <div class="summary-box">
+        <h3>Customer Care</h3>
+        <p>Mon&ndash;Fri, 9am&ndash;8pm ET<br>Sat&ndash;Sun, 10am&ndash;6pm ET</p>
+        <p><strong>1-800-555-8663</strong><br>(1-800-555-TNOF)</p>
+        <p>care@truenorthoutfitters.example</p>
+      </div>
+      <div class="summary-box">
+        <h3>Head Office</h3>
+        <p class="confirm-address">True North Outfitters Ltd.<br>400 Wellington St W, Suite 500<br>Toronto, ON M5V 1E3</p>
+      </div>
+      <div class="summary-box">
+        <h3>Prefer in person?</h3>
+        <p>Our store teams can help with returns, sizing and stock checks.</p>
+        <a class="btn btn-ghost btn-block" href="/stores">Find a Store</a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

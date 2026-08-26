@@ -1,0 +1,187 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- announcement bar / utility strip -->
+<div class="topbar">
+  <div class="container topbar-inner">
+    <div class="topbar-promo">
+      <span class="topbar-msg">Free shipping on orders over $100 CAD</span>
+      <span class="topbar-sep">·</span>
+      <a href="/pages/shipping-returns">30-day returns</a>
+    </div>
+    <div class="topbar-utils">
+      <select id="currency-select" class="currency-select" aria-label="Currency">
+        <option value="CAD" <%= currency === 'CAD' ? 'selected' : '' %>>$ CAD</option>
+        <option value="USD" <%= currency === 'USD' ? 'selected' : '' %>>$ USD</option>
+      </select>
+      <button id="theme-toggle" class="theme-toggle" type="button" title="Toggle dark mode">
+        <span class="theme-toggle-icon"><%= theme === 'dark' ? '☀' : '☾' %></span>
+        <span class="theme-toggle-label"><%= theme === 'dark' ? 'Light' : 'Dark' %></span>
+      </button>
+      <a href="/stores" class="topbar-stores">Store Finder</a>
+      <% if (user) { %>
+        <a href="/account" class="topbar-account">Hi, <%= user.firstName %></a>
+        <form action="/logout" method="post" class="inline-form"><button type="submit" class="linklike">Sign Out</button></form>
+      <% } else { %>
+        <a href="/login" class="topbar-account">Sign In</a>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <a class="logo" href="/">
+      <span class="logo-main">TRUE NORTH</span>
+      <span class="logo-sub">OUTFITTERS</span>
+    </a>
+
+    <form class="header-search" id="header-search" action="/search" method="get" autocomplete="off">
+      <input type="text" name="q" id="search-input" placeholder="Search products, brands…" value="<%= typeof searchQuery !== 'undefined' && searchQuery ? searchQuery : '' %>">
+      <button type="submit" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <div class="search-suggest" id="search-suggest"></div>
+    </form>
+
+    <div class="header-actions">
+      <a href="/wishlist" class="header-action" id="header-wishlist" title="Wishlist">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        <span class="action-badge wishlist-badge <%= wishlistCount ? '' : 'is-empty' %>"><%= wishlistCount %></span>
+      </a>
+      <a href="<%= user ? '/account' : '/login' %>" class="header-action header-action-account" title="Account">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+<!-- href is the no-JS fallback; main.js hijacks the click into the drawer -->
+      <a href="/cart" class="header-action" id="header-cart" title="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="action-badge cart-badge <%= cartCount ? '' : 'is-empty' %>"><%= cartCount %></span>
+      </a>
+    </div>
+  </div>
+
+  <nav class="main-nav" id="main-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <% NAV.depts.forEach(function (d) { %>
+        <li class="nav-item has-mega">
+          <a href="/collections/<%= d.slug %>"><%= d.name %></a>
+          <div class="mega-panel">
+            <div class="mega-inner container">
+              <div class="mega-left">
+                <div class="mega-col">
+                  <h4><a href="/collections/<%= d.slug %>">Shop All <%= d.name %></a></h4>
+                  <ul>
+                    <% d.categories.slice(0, Math.ceil(d.categories.length/2)).forEach(function (c) { %>
+                      <li><a href="/collections/<%= c.slug %>"><%= c.name %></a></li>
+                    <% }) %>
+                  </ul>
+                </div>
+                <div class="mega-col">
+                  <h4>&nbsp;</h4>
+                  <ul>
+                    <% d.categories.slice(Math.ceil(d.categories.length/2)).forEach(function (c) { %>
+                      <li><a href="/collections/<%= c.slug %>"><%= c.name %></a></li>
+                    <% }) %>
+                    <li class="mega-sale-link"><a href="/collections/sale">Sale</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mega-right">
+                <% d.tiles.forEach(function (t) { %>
+                <a class="mega-tile" href="<%= t.href %>">
+                  <img src="<%= t.image %>" alt="<%= t.label %>" loading="lazy">
+                  <span class="mega-tile-label"><%= t.label %></span>
+                </a>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </li>
+        <% }) %>
+
+        <li class="nav-item has-mega">
+          <a href="/collections/all">Brands</a>
+          <div class="mega-panel">
+            <div class="mega-inner container">
+              <div class="mega-left mega-brands">
+                <div class="mega-col">
+                  <h4>Our Brands</h4>
+                  <ul class="brand-cols">
+                    <% NAV.brands.forEach(function (b) { %>
+                      <li><a href="/collections/all?brand=<%= encodeURIComponent(b) %>"><%= b %></a></li>
+                    <% }) %>
+                  </ul>
+                </div>
+              </div>
+              <div class="mega-right">
+                <a class="mega-tile" href="/collections/all?brand=<%= encodeURIComponent(NAV.brands[12]) %>">
+                  <img src="/media/brand/meridian-wool-co.svg" alt="Meridian Wool Co." loading="lazy">
+                  <span class="mega-tile-label">Featured: Meridian Wool Co.</span>
+                </a>
+                <a class="mega-tile" href="/collections/all?brand=<%= encodeURIComponent(NAV.brands[6]) %>">
+                  <img src="/media/brand/great-plains-denim.svg" alt="Great Plains Denim" loading="lazy">
+                  <span class="mega-tile-label">Featured: Great Plains Denim</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item"><a href="/collections/new-arrivals">New Arrivals</a></li>
+        <li class="nav-item"><a href="/collections/best-sellers">Best Sellers</a></li>
+        <li class="nav-item nav-sale"><a href="/collections/sale">Sale</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- mobile slide-out -->
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="mobile-drawer-head">
+    <span>Menu</span>
+    <button id="drawer-close" aria-label="Close">&times;</button>
+  </div>
+  <ul class="mobile-nav">
+    <% NAV.depts.forEach(function (d) { %>
+    <li class="m-has-sub">
+      <a href="/collections/<%= d.slug %>"><%= d.name %></a>
+      <button class="m-sub-toggle" aria-label="Expand">+</button>
+      <ul class="m-sub">
+        <% d.categories.forEach(function (c) { %>
+          <li><a href="/collections/<%= c.slug %>"><%= c.name %></a></li>
+        <% }) %>
+      </ul>
+    </li>
+    <% }) %>
+    <li><a href="/collections/new-arrivals">New Arrivals</a></li>
+    <li><a href="/collections/best-sellers">Best Sellers</a></li>
+    <li class="m-sale"><a href="/collections/sale">Sale</a></li>
+    <li><a href="/stores">Store Finder</a></li>
+    <li><a href="/contact">Contact</a></li>
+    <% if (user) { %>
+      <li><a href="/account">My Account</a></li>
+    <% } else { %>
+      <li><a href="/login">Sign In</a></li>
+    <% } %>
+  </ul>
+</div>
+<div class="drawer-overlay" id="drawer-overlay"></div>
+
+<!-- cart drawer (right side). contents come from /api/cart-drawer -->
+<aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart">
+  <div class="cart-drawer-head">
+    <span>Your Cart</span>
+    <button id="cart-drawer-close" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-drawer-body" id="cart-drawer-body"></div>
+</aside>
+
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>" id="flash-msg"><%= flash.text %> <button class="flash-close">&times;</button></div>
+<% } %>
+
+<main id="main">

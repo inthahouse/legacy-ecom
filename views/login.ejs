@@ -1,0 +1,33 @@
+<%- include('partials/head', { bodyClass: 'page-auth' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <div class="auth-box">
+    <h1>Sign In</h1>
+    <div class="demo-credentials">
+      <strong>Demo accounts</strong>
+      <p>jane@example.com / password123<br>sam@example.com / password123</p>
+    </div>
+
+    <% if (errors && errors.length) { %>
+    <div class="form-errors"><ul><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul></div>
+    <% } %>
+
+    <form action="/login" method="post">
+      <input type="hidden" name="returnTo" value="<%= returnTo %>">
+      <div class="form-field">
+        <label for="li-email">Email</label>
+        <input type="email" id="li-email" name="email" value="<%= form.email || '' %>" required>
+      </div>
+      <div class="form-field">
+        <label for="li-pass">Password</label>
+        <input type="password" id="li-pass" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In</button>
+    </form>
+    <p class="auth-alt">New here? <a href="/register">Create an account</a></p>
+    <p class="auth-alt"><a href="#" onclick="alert('Password reset emails are disabled in the demo environment. Use one of the demo accounts.');return false;">Forgot password?</a></p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,16 @@
+<%
+/* cookie consent banner - shown by main.js ~10s after page load, once per
+   browser, until the visitor accepts or declines (choice lives in
+   localStorage, see TNO.cookieConsentKey) */
+%>
+<div class="cookie-consent" id="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+  <div class="cookie-consent-title">We use cookies</div>
+  <div class="cookie-consent-body">
+    We use cookies to keep your cart and preferences working, and to understand how the site is used.
+    See our <a href="/pages/shipping-returns">policies</a> for details.
+  </div>
+  <div class="cookie-consent-actions">
+    <button type="button" class="btn btn-primary" id="cookie-consent-accept">Accept All</button>
+    <button type="button" class="btn btn-ghost" id="cookie-consent-decline">Decline</button>
+  </div>
+</div>

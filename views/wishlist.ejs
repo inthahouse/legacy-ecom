@@ -1,0 +1,38 @@
+<%- include('partials/head', { bodyClass: 'page-wishlist' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="page-title">Wishlist</h1>
+  <% if (!user) { %>
+    <p class="wishlist-guest-note">You're browsing as a guest &mdash; your wishlist is saved to this session only.
+      <a href="/login">Sign in</a> to keep it forever (we'll merge this list into your account).</p>
+  <% } %>
+
+  <% if (items.length === 0) { %>
+    <div class="empty-state">
+      <p>Nothing saved yet. Tap the &#9825; on any product to save it here.</p>
+      <a class="btn btn-primary btn-lg" href="/collections/best-sellers">Browse Best Sellers</a>
+    </div>
+  <% } else { %>
+    <div id="wishlist-results">
+      <div class="results-toolbar">
+        <p class="results-count"><strong><%= items.length %></strong> saved item<%= items.length === 1 ? '' : 's' %></p>
+        <div class="view-toggle" role="group" aria-label="Product view">
+          <button type="button" class="view-toggle-btn js-view-toggle is-active" data-view="grid" aria-label="Grid view" aria-pressed="true" title="Grid view">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+          </button>
+          <button type="button" class="view-toggle-btn js-view-toggle" data-view="list" aria-label="List view" aria-pressed="false" title="List view">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="4" height="4" rx="0.5"/><rect x="3" y="15.5" width="4" height="4" rx="0.5"/><line x1="10" y1="6.5" x2="21" y2="6.5"/><line x1="10" y1="17.5" x2="21" y2="17.5"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="product-grid wishlist-grid">
+        <% items.forEach(function (p) { %>
+          <%- include('partials/product-card', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

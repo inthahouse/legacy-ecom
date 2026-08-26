@@ -1,0 +1,136 @@
+<%- include('partials/head', { bodyClass: 'page-account' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <% if (!user.defaultCard) { %>
+    <div class="account-promo-banner">
+      <p><strong>Add a payment card</strong> to receive a promo code for <strong>20% off</strong> your next purchase. <a href="#add-card-toggle">Add a card &rarr;</a></p>
+    </div>
+  <% } else { %>
+    <div class="account-bestsellers">
+      <h2 class="account-bestsellers-title">Best Sellers You Might Like</h2>
+      <div class="product-grid account-bestsellers-grid">
+        <% bestSellers.forEach(function (p) { %>
+          <%- include('partials/product-card', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+
+  <h1 class="page-title">My Account</h1>
+  <p class="account-hello">Signed in as <strong><%= user.firstName %> <%= user.lastName %></strong> (<%= user.email %>) &middot; member since <%= user.createdAt %></p>
+
+  <div class="account-layout">
+    <div class="account-main">
+      <h2>Order History</h2>
+      <% if (orders.length === 0) { %>
+        <div class="empty-state">
+          <p>No orders yet.</p>
+          <a class="btn btn-primary" href="/collections/new-arrivals">Start Shopping</a>
+        </div>
+      <% } else { %>
+        <% orders.forEach(function (o) { %>
+        <div class="order-card">
+          <div class="order-card-head">
+            <div>
+              <strong><%= o.number %></strong>
+              <span class="order-date"><%= o.placedAt.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+            </div>
+            <div>
+              <span class="order-status"><%= o.status %></span>
+              <strong class="order-total"><%= fmt(o.total) %></strong>
+            </div>
+          </div>
+          <div class="order-card-lines">
+            <% o.lines.slice(0, 6).forEach(function (l) { %>
+              <a href="/products/<%= l.slug %>" title="<%= l.title %>"><img src="<%= l.image %>" alt="<%= l.title %>"></a>
+            <% }) %>
+            <% if (o.lines.length > 6) { %><span class="order-more">+<%= o.lines.length - 6 %></span><% } %>
+          </div>
+          <a class="linklike" href="/order/<%= o.number %>/confirmation">View order details &rarr;</a>
+        </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <aside class="account-aside">
+      <div class="summary-box">
+        <h3>Wishlist</h3>
+        <p><%= wishlistCount %> saved item<%= wishlistCount === 1 ? '' : 's' %></p>
+        <a class="btn btn-ghost btn-block" href="/wishlist">View Wishlist</a>
+      </div>
+      <div class="summary-box">
+        <h3>Default Address</h3>
+        <% if (user.addresses.length) { var a = user.addresses[0]; %>
+          <p class="confirm-address"><%= a.line1 %><br><%= a.city %>, <%= a.region %> <%= a.postal %><br><%= a.phone %></p>
+        <% } else { %>
+          <p>No saved address. It'll be saved after your next checkout.</p>
+        <% } %>
+      </div>
+
+      <div class="summary-box">
+        <h3>Payment Method</h3>
+        <% if (user.defaultCard) { %>
+          <div class="saved-card">
+            <span class="saved-card-brand"><%= user.defaultCard.brand %></span>
+            <span class="saved-card-num">&bull;&bull;&bull;&bull; <%= user.defaultCard.last4 %></span>
+            <p class="saved-card-meta">
+              Expires <%= String(user.defaultCard.expMonth).padStart(2, '0') %>/<%= String(user.defaultCard.expYear).slice(-2) %>
+              &middot; <%= user.defaultCard.name %>
+            </p>
+          </div>
+          <form action="/account/payment/remove" method="post">
+            <button type="submit" class="btn btn-ghost btn-block">Remove Card</button>
+          </form>
+        <% } else { %>
+          <p>No default card saved.</p>
+          <button type="button" class="btn btn-ghost btn-block" id="add-card-toggle" aria-expanded="<%= openCardForm ? 'true' : 'false' %>">
+            <%= openCardForm ? 'Cancel' : 'Add Card' %>
+          </button>
+          <div class="add-card-body <%= openCardForm ? 'is-open' : '' %>" id="add-card-body">
+            <div class="add-card-body-inner">
+              <form action="/account/payment" method="post" id="add-card-form">
+                <div class="form-field">
+                  <label for="acc-cc-name">Name on Card *</label>
+                  <input type="text" id="acc-cc-name" name="name" value="<%= cardForm.name || '' %>"
+                         class="<%= cardErrors && cardErrors.name ? 'is-invalid' : '' %>" required>
+                  <% if (cardErrors && cardErrors.name) { %><p class="field-error"><%= cardErrors.name %></p><% } %>
+                </div>
+                <div class="form-field">
+                  <label for="acc-cc-num">Card Number *</label>
+                  <input type="text" id="acc-cc-num" name="ccNumber" placeholder="4111 1111 1111 1111"
+                         value="<%= cardForm.ccNumber || '' %>" autocomplete="off"
+                         class="<%= cardErrors && cardErrors.ccNumber ? 'is-invalid' : '' %>" required>
+                  <% if (cardErrors && cardErrors.ccNumber) { %><p class="field-error"><%= cardErrors.ccNumber %></p><% } %>
+                </div>
+                <div class="form-row">
+                  <div class="form-field">
+                    <label for="acc-cc-exp">Expiry (MM/YY) *</label>
+                    <input type="text" id="acc-cc-exp" name="ccExpiry" placeholder="05/29"
+                           value="<%= cardForm.ccExpiry || '' %>" autocomplete="off"
+                           class="<%= cardErrors && cardErrors.ccExpiry ? 'is-invalid' : '' %>" required>
+                    <% if (cardErrors && cardErrors.ccExpiry) { %><p class="field-error"><%= cardErrors.ccExpiry %></p><% } %>
+                  </div>
+                  <div class="form-field">
+                    <label for="acc-cc-cvv">CVV *</label>
+                    <input type="text" id="acc-cc-cvv" name="ccCvv" placeholder="123" maxlength="4" autocomplete="off"
+                           class="<%= cardErrors && cardErrors.ccCvv ? 'is-invalid' : '' %>" required>
+                    <% if (cardErrors && cardErrors.ccCvv) { %><p class="field-error"><%= cardErrors.ccCvv %></p><% } %>
+                  </div>
+                </div>
+                <p class="payment-note">&#128274; Demo store &mdash; only the card brand and last 4 digits are saved. Full number and CVV are never stored.</p>
+                <button type="submit" class="btn btn-primary btn-block">Save Card</button>
+              </form>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <form action="/logout" method="post">
+        <button type="submit" class="btn btn-ghost btn-block">Sign Out</button>
+      </form>
+    </aside>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

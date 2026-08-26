@@ -1,0 +1,94 @@
+<%- include('partials/head', { bodyClass: 'page-cart' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <h1 class="page-title">Shopping Cart</h1>
+
+  <% if (cart.lines.length === 0) { %>
+    <div class="empty-state">
+      <p>Your cart is empty.</p>
+      <a class="btn btn-primary btn-lg" href="/collections/new-arrivals">Shop New Arrivals</a>
+      <a class="btn btn-ghost btn-lg" href="/wishlist">View Wishlist</a>
+    </div>
+  <% } else { %>
+
+  <div class="cart-layout">
+    <div class="cart-lines">
+      <div class="cart-table-head">
+        <span class="cth-product">Product</span>
+        <span class="cth-price">Price</span>
+        <span class="cth-qty">Qty</span>
+        <span class="cth-total">Total</span>
+      </div>
+
+      <% cart.lines.forEach(function (l) { %>
+      <% if (l.isGift) { %>
+      <div class="cart-line cart-line-gift" data-sku="<%= l.sku %>">
+        <div class="cart-line-product">
+          <span class="cart-thumb">
+            <img src="<%= l.variant.images[0] %>" alt="<%= l.product.title %>">
+          </span>
+          <div>
+            <span class="badge badge-gift">Free Gift</span>
+            <span class="cart-line-title"><%= l.product.shortName %></span>
+            <div class="cart-line-meta">
+              <span class="cart-swatch-dot" style="background: <%= l.variant.hex %>;"></span>
+              <%= l.variant.colorName %> / <%= l.size %>
+            </div>
+            <div class="cart-line-sku">Added automatically with orders over <%= fmt(cart.gift.threshold) %></div>
+          </div>
+        </div>
+        <div class="cart-line-price" data-label="Price">
+          <span class="price price-free">FREE</span>
+          <span class="gift-value-strike"><%= fmt(l.product.value) %></span>
+        </div>
+        <div class="cart-line-qty" data-label="Qty"><span class="cart-gift-qty">1</span></div>
+        <div class="cart-line-total" data-label="Total"><span class="price price-free">FREE</span></div>
+      </div>
+      <% } else { %>
+      <div class="cart-line" data-sku="<%= l.sku %>">
+        <div class="cart-line-product">
+          <a class="cart-thumb" href="/products/<%= l.product.slug %>?color=<%= l.variant.colorSlug %>">
+            <img src="<%= l.variant.images[0] %>" alt="<%= l.product.title %>">
+          </a>
+          <div>
+            <div class="card-brand"><%= l.product.brand %></div>
+            <a class="cart-line-title" href="/products/<%= l.product.slug %>"><%= l.product.title %></a>
+            <div class="cart-line-meta">
+              <span class="cart-swatch-dot" style="background: <%= l.variant.hex %>;"></span>
+              <%= l.variant.colorName %> / Size <%= l.size %>
+            </div>
+            <div class="cart-line-sku">SKU: <%= l.sku %></div>
+            <% if (l.stock <= 5) { %><div class="cart-low-stock">Only <%= l.stock %> left in stock</div><% } %>
+            <button class="linklike cart-remove js-cart-remove" data-sku="<%= l.sku %>">Remove</button>
+          </div>
+        </div>
+        <div class="cart-line-price" data-label="Price">
+          <% if (l.compareAt) { %><span class="price price-sale"><%= fmt(l.unitPrice) %></span><% } else { %><span class="price"><%= fmt(l.unitPrice) %></span><% } %>
+        </div>
+        <div class="cart-line-qty" data-label="Qty">
+          <div class="qty-stepper">
+            <button type="button" class="qty-btn js-cart-qty" data-sku="<%= l.sku %>" data-delta="-1">&minus;</button>
+            <input type="text" class="js-cart-qty-input" data-sku="<%= l.sku %>" value="<%= l.qty %>" maxlength="2">
+            <button type="button" class="qty-btn js-cart-qty" data-sku="<%= l.sku %>" data-delta="1">+</button>
+          </div>
+        </div>
+        <div class="cart-line-total" data-label="Total"><span class="price"><%= fmt(l.lineTotal) %></span></div>
+      </div>
+      <% } %>
+      <% }) %>
+
+      <div class="cart-continue">
+        <a href="/collections/all" class="linklike">&larr; Continue shopping</a>
+      </div>
+    </div>
+
+    <aside class="cart-aside" id="cart-summary-wrap">
+      <%- include('partials/cart-summary', { cart: cart, checkoutMode: false }) %>
+    </aside>
+  </div>
+
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

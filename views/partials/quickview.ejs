@@ -1,0 +1,52 @@
+<%
+/* quick view modal body - injected into #tno-modal-body by main.js */
+%>
+<div class="qv" data-product-id="<%= product.id %>">
+  <div class="qv-media">
+    <img id="qv-image" src="<%= variant.images[0] %>" alt="<%= product.title %>">
+  </div>
+  <div class="qv-info">
+    <div class="card-brand"><%= product.brand %></div>
+    <h3 class="qv-title"><%= product.title %></h3>
+    <div class="qv-price">
+      <% if (product.compareAt) { %>
+        <span class="price price-sale"><%= fmt(product.price) %></span>
+        <span class="price price-compare"><%= fmt(product.compareAt) %></span>
+      <% } else { %>
+        <span class="price"><%= fmt(product.price) %></span>
+      <% } %>
+    </div>
+    <% if (product.rating > 0) { %>
+    <div class="card-rating">
+      <span class="stars" style="--rating: <%= (product.rating/5*100).toFixed(0) %>%;">★★★★★</span>
+      <span class="rating-count">(<%= product.ratingCount %>)</span>
+    </div>
+    <% } %>
+
+    <div class="qv-option">
+      <div class="pdp-option-label">Colour: <strong class="qv-color-name"><%= variant.colorName %></strong></div>
+      <div class="qv-swatches">
+        <% product.variants.forEach(function (v) { %>
+          <button class="pdp-swatch qv-swatch <%= v.colorSlug === variant.colorSlug ? 'is-active' : '' %>"
+                  type="button" style="background: <%= v.hex %>;" title="<%= v.colorName %>"
+                  data-color="<%= v.colorSlug %>" data-product-id="<%= product.id %>"></button>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="qv-option">
+      <div class="pdp-option-label">Size</div>
+      <div class="qv-sizes">
+        <% variant.sizes.forEach(function (s) { %>
+          <button class="pdp-size qv-size <%= s.stock === 0 ? 'is-oos' : '' %>" type="button"
+                  data-sku="<%= s.sku %>" data-size="<%= s.size %>" <%= s.stock === 0 ? 'disabled' : '' %>><%= s.size %></button>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="qv-actions">
+      <button class="btn btn-primary btn-block qv-add" type="button" disabled>Select a Size</button>
+    </div>
+    <a class="qv-full-link" href="/products/<%= product.slug %>?color=<%= variant.colorSlug %>">View Full Details &rarr;</a>
+  </div>
+</div>

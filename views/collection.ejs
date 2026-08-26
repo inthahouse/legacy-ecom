@@ -1,0 +1,131 @@
+<%- include('partials/head', { bodyClass: 'page-collection' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a> <span>/</span>
+    <% if (isSearch) { %>
+      <span class="bc-current">Search</span>
+    <% } else { %>
+      <a href="/collections">Collections</a> <span>/</span>
+      <span class="bc-current"><%= collection.name %></span>
+    <% } %>
+  </nav>
+
+  <header class="collection-head">
+    <h1><%= collection.name %></h1>
+    <% if (collection.blurb) { %><p class="collection-blurb"><%= collection.blurb %></p><% } %>
+  </header>
+
+  <div class="collection-layout">
+
+    <!-- ============ SIDEBAR FILTERS ============ -->
+    <aside class="filter-sidebar" id="filter-sidebar">
+      <div class="filter-sidebar-head">
+        <h3>Filters</h3>
+        <button type="button" class="filter-close" id="filter-close" aria-label="Close filters">&times;</button>
+      </div>
+
+      <form id="filter-form" action="<%= baseUrl %>" method="get">
+        <% if (isSearch) { %><input type="hidden" name="q" value="<%= searchQuery %>"><% } %>
+        <input type="hidden" name="sort" id="sort-field" value="<%= result.sort %>">
+
+        <div class="filter-group filter-group-open">
+          <button type="button" class="filter-group-title">Price <span class="fg-arrow">▾</span></button>
+          <div class="filter-group-body">
+            <div class="filter-group-body-inner">
+              <div id="price-slider"
+                   data-min="<%= result.facets.priceRange.min %>"
+                   data-max="<%= result.facets.priceRange.max %>"
+                   data-cur-min="<%= result.selected.priceMin != null ? result.selected.priceMin : result.facets.priceRange.min %>"
+                   data-cur-max="<%= result.selected.priceMax != null ? result.selected.priceMax : result.facets.priceRange.max %>"></div>
+              <div class="price-slider-labels">
+                <span id="price-label-min">$<%= result.selected.priceMin != null ? result.selected.priceMin : result.facets.priceRange.min %></span>
+                <span id="price-label-max">$<%= result.selected.priceMax != null ? result.selected.priceMax : result.facets.priceRange.max %></span>
+              </div>
+              <input type="hidden" name="price_min" id="price-min-field" value="<%= result.selected.priceMin != null ? result.selected.priceMin : '' %>">
+              <input type="hidden" name="price_max" id="price-max-field" value="<%= result.selected.priceMax != null ? result.selected.priceMax : '' %>">
+              <p class="filter-note">Prices shown in CAD</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group filter-group-open">
+          <button type="button" class="filter-group-title">Colour <span class="fg-arrow">▾</span></button>
+          <div class="filter-group-body">
+            <div class="filter-group-body-inner">
+              <div class="color-filter-grid">
+                <% colorFamilies.forEach(function (cf) {
+                     var count = result.facets.colors[cf.slug] || 0;
+                     if (!count) return; %>
+                  <label class="color-filter <%= result.selected.colors.indexOf(cf.slug) !== -1 ? 'is-checked' : '' %>" title="<%= cf.name %> (<%= count %>)">
+                    <input type="checkbox" name="color" value="<%= cf.slug %>" <%= result.selected.colors.indexOf(cf.slug) !== -1 ? 'checked' : '' %>>
+                    <span class="color-dot" style="background: <%= cf.hex %>;"></span>
+                    <span class="color-name"><%= cf.name %></span>
+                  </label>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group filter-group-open">
+          <button type="button" class="filter-group-title">Size <span class="fg-arrow">▾</span></button>
+          <div class="filter-group-body">
+            <div class="filter-group-body-inner">
+              <div class="size-filter-grid">
+                <% var SIZE_ORDER = ['XS','S','M','L','XL','XXL','28','30','32','34','36','38','40','4','5-6','7-8','10-12','14','O/S'];
+                   SIZE_ORDER.forEach(function (sz) {
+                     if (!result.facets.sizes[sz]) return; %>
+                  <label class="size-filter <%= result.selected.sizes.indexOf(sz) !== -1 ? 'is-checked' : '' %>">
+                    <input type="checkbox" name="size" value="<%= sz %>" <%= result.selected.sizes.indexOf(sz) !== -1 ? 'checked' : '' %>>
+                    <span><%= sz %></span>
+                  </label>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group filter-group-open">
+          <button type="button" class="filter-group-title">Brand <span class="fg-arrow">▾</span></button>
+          <div class="filter-group-body">
+            <div class="filter-group-body-inner">
+              <ul class="brand-filter-list">
+                <% Object.keys(result.facets.brands).sort().forEach(function (b) { %>
+                  <li>
+                    <label>
+                      <input type="checkbox" name="brand" value="<%= b %>" <%= result.selected.brands.indexOf(b) !== -1 ? 'checked' : '' %>>
+                      <span><%= b %></span>
+                      <span class="facet-count"><%= result.facets.brands[b] %></span>
+                    </label>
+                  </li>
+                <% }) %>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+          <a href="<%= baseUrl %><%= isSearch ? '?q=' + encodeURIComponent(searchQuery) : '' %>" class="btn btn-ghost btn-block" id="clear-filters">Clear All</a>
+        </div>
+      </form>
+    </aside>
+
+    <!-- ============ RESULTS ============ -->
+    <div class="collection-main">
+      <button class="btn btn-ghost mobile-filter-btn" id="mobile-filter-btn" type="button">
+        Filter &amp; Sort
+        <% var activeCount = result.selected.brands.length + result.selected.colors.length + result.selected.sizes.length + (result.selected.priceMin != null || result.selected.priceMax != null ? 1 : 0); %>
+        <% if (activeCount) { %><span class="filter-count-pill"><%= activeCount %></span><% } %>
+      </button>
+
+      <div id="collection-results" data-base-url="<%= baseUrl %>">
+        <%- include('partials/collection-results') %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

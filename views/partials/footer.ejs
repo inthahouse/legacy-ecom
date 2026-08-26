@@ -1,0 +1,74 @@
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col footer-about">
+      <div class="footer-logo">TRUE NORTH <span>OUTFITTERS</span></div>
+      <p>Clothing, outerwear and accessories from independent makers. Proudly Canadian since 1987, with <a href="/stores">100+ stores</a> across North America.</p>
+      <form class="newsletter" id="newsletter-form">
+        <label for="nl-email">Get 10% off your first order</label>
+        <div class="newsletter-row">
+          <input type="email" id="nl-email" placeholder="Email address" required>
+          <button type="submit">Sign Up</button>
+        </div>
+        <p class="newsletter-done" style="display:none;">Thanks! Use code <strong>WELCOME10</strong> at checkout.</p>
+      </form>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="/collections/women">Women</a></li>
+        <li><a href="/collections/men">Men</a></li>
+        <li><a href="/collections/kids">Kids</a></li>
+        <li><a href="/collections/new-arrivals">New Arrivals</a></li>
+        <li><a href="/collections/sale">Sale</a></li>
+        <li><a href="/collections">All Collections</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="/pages/shipping-returns">Shipping &amp; Returns</a></li>
+        <li><a href="/stores">Store Finder</a></li>
+        <li><a href="/wishlist">Wishlist</a></li>
+        <li><a href="<%= user ? '/account' : '/login' %>">My Account</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="/pages/about">Our Story</a></li>
+        <li><a href="/pages/fall-preview">Fall Preview</a></li>
+        <li><a href="/pages/summer-clearance">Summer Clearance</a></li>
+        <li><a href="#" onclick="alert('Careers portal is down for maintenance.');return false;">Careers</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; 2017&ndash;2023 True North Outfitters Ltd. All rights reserved. Prices in <span class="footer-currency"><%= currency %></span>.</p>
+    <p class="footer-payments">VISA &middot; Mastercard &middot; AMEX &middot; Interac</p>
+  </div>
+</footer>
+
+<!-- generic modal shell (quick view etc) -->
+<div class="tno-modal-overlay" id="tno-modal-overlay">
+  <div class="tno-modal" id="tno-modal" role="dialog" aria-modal="true">
+    <button class="tno-modal-close" id="tno-modal-close" aria-label="Close">&times;</button>
+    <div class="tno-modal-body" id="tno-modal-body"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<%- include('cookie-consent') %>
+
+<!-- every app script loads on every page (see server.js APP_SCRIPTS) - no
+     per-page opt-in list to maintain, and these are served with
+     Cache-Control: no-store so edits always take effect on the next load -->
+<script src="/js/main.js"></script>
+<% appScripts.forEach(function (f) { %>
+<script src="/js/<%= f %>.js"></script>
+<% }) %>
+</body>
+</html>

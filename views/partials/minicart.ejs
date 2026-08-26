@@ -1,0 +1,38 @@
+<div class="minicart">
+  <% if (cart.lines.length === 0) { %>
+    <p class="minicart-empty">Your cart is empty.</p>
+    <a class="btn btn-primary btn-block" href="/collections/new-arrivals">Start Shopping</a>
+  <% } else { %>
+    <div class="minicart-lines">
+      <% cart.lines.slice(0, 4).forEach(function (l) { %>
+      <div class="minicart-line">
+        <a href="/products/<%= l.product.slug %>?color=<%= l.variant.colorSlug %>" class="minicart-thumb">
+          <img src="<%= l.variant.images[0] %>" alt="">
+        </a>
+        <div class="minicart-line-info">
+          <a class="minicart-line-title" href="/products/<%= l.product.slug %>"><%= l.product.title %></a>
+          <div class="minicart-line-meta"><%= l.variant.colorName %> / <%= l.size %> &middot; Qty <%= l.qty %></div>
+          <div class="minicart-line-price"><%= fmt(l.lineTotal) %></div>
+        </div>
+        <button class="minicart-remove js-minicart-remove" data-sku="<%= l.sku %>" title="Remove">&times;</button>
+      </div>
+      <% }) %>
+      <% if (cart.lines.length > 4) { %>
+        <p class="minicart-more">+ <%= cart.lines.length - 4 %> more item(s)</p>
+      <% } %>
+    </div>
+    <div class="minicart-subtotal">
+      <span>Subtotal</span>
+      <strong><%= fmt(cart.subtotal) %></strong>
+    </div>
+    <% if (cart.freeShipRemaining > 0) { %>
+      <p class="minicart-freeship">You're <strong><%= fmt(cart.freeShipRemaining) %></strong> away from free shipping!</p>
+    <% } else { %>
+      <p class="minicart-freeship is-earned">&#10003; You've earned free standard shipping</p>
+    <% } %>
+    <div class="minicart-btns">
+      <a class="btn btn-ghost" href="/cart">View Cart</a>
+      <a class="btn btn-primary" href="/checkout">Checkout</a>
+    </div>
+  <% } %>
+</div>

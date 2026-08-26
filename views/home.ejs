@@ -1,0 +1,106 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner container">
+    <div class="hero-copy">
+      <p class="hero-kicker">Fall 2026 Collection</p>
+      <h1>Built for the<br>seasons ahead.</h1>
+      <p class="hero-sub">Outerwear, knits and denim from 20+ independent North American brands. Made to be worn hard and kept for years.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary btn-lg" href="/collections/new-arrivals">Shop New Arrivals</a>
+        <a class="btn btn-ghost btn-lg" href="/pages/fall-preview">See the Lookbook</a>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="hero-card hero-card-1"><img loading="lazy" src="<%= newArrivals[0] ? newArrivals[0].variants[0].images[0] : '' %>" alt=""></div>
+      <div class="hero-card hero-card-2"><img src="<%= newArrivals[1] ? newArrivals[1].variants[0].images[0] : '' %>" alt=""></div>
+      <div class="hero-card hero-card-3"><img src="<%= newArrivals[2] ? newArrivals[2].variants[0].images[0] : '' %>" alt=""></div>
+    </div>
+  </div>
+</section>
+
+<!-- USP strip -->
+<div class="usp-strip">
+  <div class="container usp-row">
+    <div class="usp"><strong>Free Shipping</strong><span>on orders over $100 CAD</span></div>
+    <div class="usp"><strong>30-Day Returns</strong><span>in store or by mail</span></div>
+    <div class="usp"><strong>100+ Stores</strong><span>across Canada &amp; the US</span></div>
+    <div class="usp"><strong>CAD / USD</strong><span>shop in your currency</span></div>
+  </div>
+</div>
+
+<!-- dept tiles -->
+<section class="home-section">
+  <div class="container">
+    <div class="dept-tiles">
+      <a class="dept-tile" href="/collections/women">
+        <img src="<%= bestSellers[0] ? bestSellers[0].variants[0].images[0] : '' %>" alt="">
+        <span class="dept-tile-label">Shop Women</span>
+      </a>
+      <a class="dept-tile" href="/collections/men">
+        <img src="<%= bestSellers[1] ? bestSellers[1].variants[0].images[0] : '' %>" alt="">
+        <span class="dept-tile-label">Shop Men</span>
+      </a>
+      <a class="dept-tile" href="/collections/kids">
+        <img src="<%= bestSellers[2] ? bestSellers[2].variants[0].images[0] : '' %>" alt="">
+        <span class="dept-tile-label">Shop Kids</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/product-carousel', { carouselTitle: 'New Arrivals', carouselProducts: newArrivals, carouselLink: '/collections/new-arrivals' }) %>
+
+<!-- split promo banners -->
+<section class="home-section">
+  <div class="container promo-split">
+    <a class="promo-banner promo-fall" href="/pages/fall-preview">
+      <div class="promo-banner-copy">
+        <p class="promo-kicker">The Edit</p>
+        <h3>Fall Preview 2026</h3>
+        <p>Layers, lined jackets and heavyweight knits.</p>
+        <span class="btn btn-light">Explore</span>
+      </div>
+    </a>
+    <a class="promo-banner promo-clearance" href="/pages/summer-clearance">
+      <div class="promo-banner-copy">
+        <p class="promo-kicker">Last Call</p>
+        <h3>Summer Clearance</h3>
+        <p>Up to 50% off — ends soon.</p>
+        <span class="btn btn-light">Shop the Sale</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<%- include('partials/product-carousel', { carouselTitle: 'Best Sellers', carouselProducts: bestSellers, carouselLink: '/collections/best-sellers' }) %>
+
+<%- include('partials/product-carousel', { carouselTitle: 'On Sale Now', carouselProducts: saleItems, carouselLink: '/collections/sale' }) %>
+
+<!-- brand strip -->
+<section class="home-section brand-strip-section">
+  <div class="container">
+    <div class="section-head"><h2 class="section-title">Our Brands</h2></div>
+    <div class="brand-strip">
+      <% NAV.brands.slice(0, 10).forEach(function (b) { %>
+        <a href="/collections/all?brand=<%= encodeURIComponent(b) %>" class="brand-chip"><%= b %></a>
+      <% }) %>
+      <a href="/collections/all" class="brand-chip brand-chip-all">All 20 Brands &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- store finder banner -->
+<section class="store-banner">
+  <div class="container store-banner-inner">
+    <div>
+      <h2>Try it on in person.</h2>
+      <p><%= 100 %>+ stores across Canada and the United States, with free in-store pickup and returns.</p>
+    </div>
+    <a class="btn btn-primary btn-lg" href="/stores">Find a Store</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

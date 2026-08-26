@@ -1,0 +1,41 @@
+<%- include('../partials/head', { bodyClass: 'page-marketing page-fall' }) %>
+<%- include('../partials/header') %>
+
+<section class="mkt-hero mkt-hero-fall">
+  <div class="container">
+    <p class="hero-kicker">The Lookbook</p>
+    <h1>Fall Preview 2026</h1>
+    <p class="mkt-hero-sub">Waxed canvas, brushed flannel, heavyweight knits. Photographed on the north shore of Lake Superior.</p>
+    <a class="btn btn-light btn-lg" href="/collections/new-arrivals">Shop the Collection</a>
+  </div>
+</section>
+
+<div class="container">
+  <div class="mkt-intro">
+    <p>Every fall we ask our brand partners one question: what would you wear for a week in the backcountry, if it also had to look right back in the city on Monday? This year's answers run from recycled-down puffers to hand-finished lambswool.</p>
+  </div>
+
+  <% looks.forEach(function (p, i) { if (!p) return; %>
+  <section class="look <%= i % 2 ? 'look-flip' : '' %>">
+    <div class="look-media">
+      <img src="<%= p.variants[0].images[0] %>" alt="<%= p.title %>">
+    </div>
+    <div class="look-copy">
+      <p class="look-num">Look <%= String(i + 1).padStart ? String(i + 1).padStart(2, '0') : '0' + (i + 1) %></p>
+      <h2><%= p.title %></h2>
+      <p class="card-brand"><%= p.brand %></p>
+      <p><%= p.description %></p>
+      <p class="price"><%= fmt(p.price) %></p>
+      <a class="btn btn-primary" href="/products/<%= p.slug %>">Shop This Look</a>
+      <button class="btn btn-ghost js-quickview" data-product-id="<%= p.id %>">Quick View</button>
+    </div>
+  </section>
+  <% }) %>
+
+  <div class="mkt-cta-band">
+    <h2>The rest of the collection lands weekly.</h2>
+    <a class="btn btn-primary btn-lg" href="/collections/new-arrivals">See What's New</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

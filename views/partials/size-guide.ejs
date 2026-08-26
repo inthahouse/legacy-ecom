@@ -1,0 +1,87 @@
+<%
+/* size guide modal body - injected into #tno-modal-body by main.js.
+   guide comes from lib/sizeGuide.js: buildGuide(product) */
+%>
+<div class="size-guide">
+  <h3 class="size-guide-title">Size Guide<% if (guide.label) { %> &middot; <span class="size-guide-subtitle"><%= guide.label %></span><% } %></h3>
+
+  <% if (guide.type === 'oneSize') { %>
+    <div class="size-guide-onesize">
+      <svg viewBox="0 0 120 120" class="size-guide-icon" aria-hidden="true">
+        <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="7 6"/>
+        <path d="M40 60 L28 60 M28 60 L36 52 M28 60 L36 68" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M80 60 L92 60 M92 60 L84 52 M92 60 L84 68" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p>This item has an adjustable or relaxed fit designed to suit most body types &mdash; no specific sizing needed.</p>
+    </div>
+  <% } else { %>
+    <div class="size-guide-layout">
+      <div class="size-guide-diagram">
+        <svg viewBox="0 0 180 300" aria-hidden="true">
+          <ellipse class="sg-body" cx="90" cy="26" rx="17" ry="19"/>
+          <path class="sg-body" d="M56 70 C56 54 74 46 90 46 C106 46 124 54 124 70 L132 140 C133 148 128 152 120 148 L116 190 C116 198 108 202 90 202 C72 202 64 198 64 190 L60 148 C52 152 47 148 48 140 Z"/>
+          <rect class="sg-body" x="66" y="202" width="22" height="86" rx="10"/>
+          <rect class="sg-body" x="92" y="202" width="22" height="86" rx="10"/>
+
+          <% if (guide.type === 'apparel') { %>
+            <g class="sg-line">
+              <line x1="46" y1="93" x2="134" y2="93"/>
+              <line x1="46" y1="87" x2="46" y2="99"/>
+              <line x1="134" y1="87" x2="134" y2="99"/>
+              <text x="140" y="97">Chest</text>
+            </g>
+            <g class="sg-line">
+              <line x1="44" y1="148" x2="136" y2="148"/>
+              <line x1="44" y1="142" x2="44" y2="154"/>
+              <line x1="136" y1="142" x2="136" y2="154"/>
+              <text x="142" y="152">Waist</text>
+            </g>
+            <g class="sg-line">
+              <line x1="42" y1="192" x2="138" y2="192"/>
+              <line x1="42" y1="186" x2="42" y2="198"/>
+              <line x1="138" y1="186" x2="138" y2="198"/>
+              <text x="144" y="196">Hip</text>
+            </g>
+          <% } else { %>
+            <g class="sg-line">
+              <line x1="44" y1="148" x2="136" y2="148"/>
+              <line x1="44" y1="142" x2="44" y2="154"/>
+              <line x1="136" y1="142" x2="136" y2="154"/>
+              <text x="142" y="152">Waist</text>
+            </g>
+            <g class="sg-line">
+              <line x1="42" y1="192" x2="138" y2="192"/>
+              <line x1="42" y1="186" x2="42" y2="198"/>
+              <line x1="138" y1="186" x2="138" y2="198"/>
+              <text x="144" y="196">Hip</text>
+            </g>
+            <g class="sg-line">
+              <line x1="90" y1="206" x2="90" y2="284"/>
+              <line x1="84" y1="206" x2="96" y2="206"/>
+              <line x1="84" y1="284" x2="96" y2="284"/>
+              <text x="102" y="248">Inseam</text>
+            </g>
+          <% } %>
+        </svg>
+      </div>
+
+      <div class="size-guide-table-wrap">
+        <table class="info-table size-guide-table">
+          <thead>
+            <tr><% guide.columns.forEach(function (c) { %><th><%= c %></th><% }) %></tr>
+          </thead>
+          <tbody>
+            <% guide.rows.forEach(function (row) { %>
+              <tr>
+                <% row.forEach(function (cell, i) { %>
+                  <% if (i === 0) { %><td><strong><%= cell %></strong></td><% } else { %><td><%= cell %></td><% } %>
+                <% }) %>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <p class="size-guide-note">All measurements in inches. Between sizes? We recommend sizing up for a more relaxed fit.</p>
+      </div>
+    </div>
+  <% } %>
+</div>

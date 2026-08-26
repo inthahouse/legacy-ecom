@@ -1,0 +1,167 @@
+<%- include('partials/head', { bodyClass: 'page-product' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <nav class="breadcrumbs">
+    <% breadcrumb.forEach(function (bc, i) { %>
+      <% if (bc.url) { %><a href="<%= bc.url %>"><%= bc.name %></a> <span>/</span><% } else { %><span class="bc-current"><%= bc.name %></span><% } %>
+    <% }) %>
+  </nav>
+
+  <div class="pdp-layout" id="pdp" data-product-id="<%= product.id %>">
+
+    <!-- ======== GALLERY ======== -->
+    <div class="pdp-gallery">
+      <!-- the carousel itself (viewport/track/slides/arrows) is built
+           entirely by product.js from PDP_DATA - nothing to render here but
+           the badge and a mount point -->
+      <div class="pdp-main-img" id="pdp-main-img">
+        <% if (product.onSale) { %><span class="badge badge-sale">Sale</span><% } %>
+      </div>
+      <div class="pdp-thumbs" id="pdp-thumbs">
+        <% variant.images.forEach(function (img, i) { %>
+          <button class="pdp-thumb <%= i === 0 ? 'is-active' : '' %>" data-img="<%= img %>" type="button">
+            <img src="<%= img %>" alt="View <%= i + 1 %>">
+          </button>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- ======== BUY BOX ======== -->
+    <div class="pdp-info">
+      <div class="pdp-brand"><a href="/collections/all?brand=<%= encodeURIComponent(product.brand) %>"><%= product.brand %></a></div>
+      <h1 class="pdp-title"><%= product.title %></h1>
+      <div class="pdp-meta">
+        <% if (product.rating > 0) { %>
+        <span class="card-rating" title="<%= product.rating.toFixed(1) %> out of 5">
+          <span class="stars" style="--rating: <%= (product.rating/5*100).toFixed(0) %>%;">★★★★★</span>
+          <a href="#reviews" class="rating-count"><%= product.ratingCount %> reviews</a>
+        </span>
+        <% } %>
+        <span class="pdp-style-code">Style <%= product.styleCode %></span>
+      </div>
+
+      <div class="pdp-price">
+        <% if (product.compareAt) { %>
+          <span class="price price-sale" id="pdp-price"><%= fmt(product.price) %></span>
+          <span class="price price-compare"><%= fmt(product.compareAt) %></span>
+          <span class="pdp-save">Save <%= Math.round((1 - product.price / product.compareAt) * 100) %>%</span>
+        <% } else { %>
+          <span class="price" id="pdp-price"><%= fmt(product.price) %></span>
+        <% } %>
+        <% if (currency === 'CAD') { %>
+          <span class="pdp-usd-hint">&asymp; <%= fmtUsd(product.price) %></span>
+        <% } %>
+      </div>
+
+      <div class="pdp-option">
+        <div class="pdp-option-label">Colour: <strong id="pdp-color-name"><%= variant.colorName %></strong></div>
+        <div class="pdp-swatches" id="pdp-swatches">
+          <% product.variants.forEach(function (v) { %>
+            <button class="pdp-swatch <%= v.colorSlug === variant.colorSlug ? 'is-active' : '' %>"
+                    type="button"
+                    style="background: <%= v.hex %>;"
+                    title="<%= v.colorName %>"
+                    data-color="<%= v.colorSlug %>"></button>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="pdp-option">
+        <div class="pdp-option-label">
+          Size: <strong id="pdp-size-name">Select a size</strong>
+          <a href="#" class="size-guide-link" onclick="alert('Size guide:\n\nXS 32-34in chest\nS 35-37\nM 38-40\nL 41-43\nXL 44-46\nXXL 47-49');return false;">Size Guide</a>
+        </div>
+        <div class="pdp-sizes" id="pdp-sizes">
+          <% variant.sizes.forEach(function (s) { %>
+            <button class="pdp-size <%= s.stock === 0 ? 'is-oos' : '' %>" type="button"
+                    data-sku="<%= s.sku %>" data-size="<%= s.size %>" data-stock="<%= s.stock %>"
+                    <%= s.stock === 0 ? 'disabled' : '' %>><%= s.size %></button>
+          <% }) %>
+        </div>
+        <p class="pdp-stock-note" id="pdp-stock-note"></p>
+      </div>
+
+      <div class="pdp-actions">
+        <div class="qty-stepper">
+          <button type="button" class="qty-btn" id="qty-minus">&minus;</button>
+          <input type="text" id="pdp-qty" value="1" maxlength="2">
+          <button type="button" class="qty-btn" id="qty-plus">+</button>
+        </div>
+        <button class="btn btn-primary btn-lg pdp-add" id="pdp-add-btn" type="button" disabled>Select a Size</button>
+        <button class="pdp-wish js-wishlist-toggle <%= inWishlist ? 'is-active' : '' %>" data-product-id="<%= product.id %>" type="button" title="Add to wishlist">
+          <svg width="22" height="22" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        </button>
+      </div>
+
+      <!-- tabs -->
+      <div class="pdp-tabs">
+        <div class="tab-headers">
+          <button class="tab-header is-active" data-tab="tab-desc" type="button">Description</button>
+          <button class="tab-header" data-tab="tab-details" type="button">Details &amp; Care</button>
+          <button class="tab-header" data-tab="tab-shipping" type="button">Shipping</button>
+        </div>
+        <div class="tab-panel is-active" id="tab-desc">
+          <p><%= product.description %></p>
+        </div>
+        <div class="tab-panel" id="tab-details">
+          <ul>
+            <li><strong>Fabric:</strong> <%= product.fabric %></li>
+            <li><strong>Fit:</strong> <%= product.fit %></li>
+            <li><strong>Care:</strong> <%= product.care %></li>
+            <li><strong>Style:</strong> <%= product.styleCode %></li>
+          </ul>
+        </div>
+        <div class="tab-panel" id="tab-shipping">
+          <p>Standard shipping (2&ndash;7 business days): $9.95 CAD, free over $100 CAD. Express (1&ndash;3 business days): $14.95 CAD. Full details on our <a href="/pages/shipping-returns">Shipping &amp; Returns</a> page.</p>
+        </div>
+      </div>
+
+      <ul class="pdp-perks">
+        <li>Free shipping over $100 CAD &middot; free over $50 for members</li>
+        <li>Free returns within 30 days, <a href="/stores">in any store</a> or by mail</li>
+        <li>Ships in 1&ndash;2 business days from Mississauga, ON</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- reviews -->
+  <section class="pdp-reviews" id="reviews">
+    <h2>Reviews<% if (product.ratingCount) { %> <span class="reviews-avg"><%= product.rating.toFixed(1) %> / 5 &middot; <%= product.ratingCount %> reviews</span><% } %></h2>
+    <% if (reviews.length === 0) { %>
+      <p class="reviews-empty">No reviews yet. Purchased this item? We'd love to hear from you.</p>
+    <% } else { %>
+      <div class="review-list">
+        <% reviews.forEach(function (r) { %>
+        <article class="review">
+          <div class="review-head">
+            <span class="stars" style="--rating: <%= (r.stars/5*100) %>%;">★★★★★</span>
+            <strong><%= r.title %></strong>
+          </div>
+          <p class="review-body"><%= r.body %></p>
+          <p class="review-byline"><%= r.name %><% if (r.verified) { %> &middot; <span class="verified">Verified Buyer</span><% } %> &middot; <%= r.date.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' }) %></p>
+        </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+</div>
+
+<%- include('partials/product-carousel', { carouselTitle: 'You May Also Like', carouselProducts: related, carouselLink: null }) %>
+
+<script>
+  // pdp bootstrap data - product.js reads this. yes it's a global. it's fine.
+  var PDP_DATA = <%- JSON.stringify({
+    id: product.id,
+    slug: product.slug,
+    title: product.title,
+    dept: product.dept,
+    variants: product.variants.map(function (v) {
+      return { colorName: v.colorName, colorSlug: v.colorSlug, hex: v.hex, images: v.images, sizes: v.sizes };
+    })
+  }) %>;
+
+  console.log(PDP_DATA)
+</script>
+
+<%- include('partials/footer', { pageJs: ['product'] }) %>

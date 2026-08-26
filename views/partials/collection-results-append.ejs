@@ -1,0 +1,21 @@
+<%
+/* one more batch of cards for infinite scroll. Fetched by collection.js when
+   the sentinel at the bottom of the grid scrolls into view - appended into
+   the existing .product-grid rather than replacing it, so filters/sort/
+   already-loaded cards stay put. Mirrors the tail end of collection-results
+   (sentinel-or-end-message); everything above that (toolbar, chips, grid
+   wrapper) lives only in the full partial. */
+%>
+<div class="infinite-scroll-batch">
+  <% result.items.forEach(function (p) { %>
+    <%- include('product-card', { p: p }) %>
+  <% }) %>
+</div>
+<% if (result.hasMore) { %>
+  <div class="infinite-scroll-sentinel" id="infinite-scroll-sentinel" data-next-page="<%= result.page + 1 %>">
+    <span class="infinite-scroll-spinner" aria-hidden="true"></span>
+    <span class="sr-only">Loading more products…</span>
+  </div>
+<% } else { %>
+  <p class="infinite-scroll-end"><%= result.totalItems %> product<%= result.totalItems === 1 ? '' : 's' %> total &mdash; you've seen them all.</p>
+<% } %>

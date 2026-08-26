@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      <%= typeof pageTitle !== 'undefined' && pageTitle ? pageTitle + ' | ' +
+      SITE_NAME : SITE_NAME + ' — Clothing & Outerwear, Made for the North' %>
+    </title>
+    <meta
+      name="description"
+      content="Shop clothing, outerwear, denim and accessories from 20+ independent brands. Free shipping over $100. True North Outfitters."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>&#127807;</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css?v=56" />
+    <!-- jquery stays in the <head>. moving it to the footer broke the inline
+     onclick handlers scattered through the old CMS blocks. do not move. -->
+    <script src="/js/vendor/jquery-3.6.4.min.js"></script>
+    <script src="/js/vendor/jquery-ui.min.js"></script>
+    <script src="/js/vendor/moment-locale.js"></script>
+    <script>
+      // global site config, read by everything in /js. predates any module system.
+      var TNO = window.TNO || {};
+      TNO.currency = "<%= currency %>";
+      TNO.theme = "<%= theme %>";
+      TNO.loggedIn = <%= user ? 'true' : 'false' %>;
+      TNO.cartCount = <%= cartCount %>;
+      TNO.wishlist = <%- JSON.stringify(wishlist) %>;
+      TNO.fxRate = 0.73; // keep in sync with lib/util.js !!
+    </script>
+  </head>
+  <body
+    class="<%= theme === 'dark' ? 'theme-dark' : '' %> <%= typeof bodyClass !== 'undefined' ? bodyClass : '' %>"
+  ></body>
+</html>

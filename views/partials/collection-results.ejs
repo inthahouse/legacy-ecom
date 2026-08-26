@@ -1,0 +1,80 @@
+<%
+/* the middle of a collection/search page. re-rendered whole on every ajax
+   filter change (always starting back at the first batch). keep it
+   self-contained: toolbar + chips + grid + infinite-scroll sentinel.
+   Scrolling past the sentinel fetches partials/collection-results-append
+   instead of re-rendering this whole partial - see public/js/collection.js. */
+%>
+
+<div class="results-toolbar">
+  <div class="results-count">
+    <strong><%= result.totalItems %></strong> <%= result.totalItems === 1 ? 'product' : 'products' %>
+  </div>
+  <div class="results-controls">
+    <div class="results-sort">
+      <label for="sort-select">Sort:</label>
+      <select id="sort-select">
+        <option value="featured" <%= result.sort === 'featured' ? 'selected' : '' %>>Featured</option>
+        <option value="newest" <%= result.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+        <option value="price-asc" <%= result.sort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+        <option value="price-desc" <%= result.sort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+        <option value="rating" <%= result.sort === 'rating' ? 'selected' : '' %>>Top Rated</option>
+        <option value="name-asc" <%= result.sort === 'name-asc' ? 'selected' : '' %>>Name: A–Z</option>
+      </select>
+    </div>
+    <div class="view-toggle" role="group" aria-label="Product view">
+      <button type="button" class="view-toggle-btn js-view-toggle is-active" data-view="grid" aria-label="Grid view (3 per row)" aria-pressed="true" title="Grid view (3 per row)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+      </button>
+      <button type="button" class="view-toggle-btn js-view-toggle" data-view="grid-4" aria-label="Grid view (4 per row)" aria-pressed="false" title="Grid view (4 per row)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="4" height="8" rx="1"/><rect x="7.3" y="3" width="4" height="8" rx="1"/><rect x="12.7" y="3" width="4" height="8" rx="1"/><rect x="18" y="3" width="4" height="8" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/><rect x="7.3" y="13" width="4" height="8" rx="1"/><rect x="12.7" y="13" width="4" height="8" rx="1"/><rect x="18" y="13" width="4" height="8" rx="1"/></svg>
+      </button>
+      <button type="button" class="view-toggle-btn js-view-toggle" data-view="list" aria-label="List view" aria-pressed="false" title="List view">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="4" height="4" rx="0.5"/><rect x="3" y="15.5" width="4" height="4" rx="0.5"/><line x1="10" y1="6.5" x2="21" y2="6.5"/><line x1="10" y1="17.5" x2="21" y2="17.5"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<% var hasFilters = result.selected.brands.length || result.selected.colors.length || result.selected.sizes.length || result.selected.priceMin != null || result.selected.priceMax != null; %>
+<% if (hasFilters) { %>
+<div class="active-chips">
+  <% result.selected.brands.forEach(function (b) { %>
+    <button class="chip js-remove-filter" data-name="brand" data-value="<%= b %>"><%= b %> &times;</button>
+  <% }) %>
+  <% result.selected.colors.forEach(function (c) { %>
+    <button class="chip js-remove-filter" data-name="color" data-value="<%= c %>"><%= c %> &times;</button>
+  <% }) %>
+  <% result.selected.sizes.forEach(function (s) { %>
+    <button class="chip js-remove-filter" data-name="size" data-value="<%= s %>">Size <%= s %> &times;</button>
+  <% }) %>
+  <% if (result.selected.priceMin != null || result.selected.priceMax != null) { %>
+    <button class="chip js-remove-filter" data-name="price" data-value="">
+      $<%= result.selected.priceMin != null ? result.selected.priceMin : result.facets.priceRange.min %>
+      – $<%= result.selected.priceMax != null ? result.selected.priceMax : result.facets.priceRange.max %> &times;
+    </button>
+  <% } %>
+  <button class="chip chip-clear" id="chips-clear-all">Clear all</button>
+</div>
+<% } %>
+
+<% if (result.items.length === 0) { %>
+  <div class="empty-results">
+    <h3>No products match your filters.</h3>
+    <p>Try removing a filter or two<% if (isSearch) { %>, or search for something else<% } %>.</p>
+  </div>
+<% } else { %>
+  <div class="product-grid">
+    <% result.items.forEach(function (p) { %>
+      <%- include('product-card', { p: p }) %>
+    <% }) %>
+  </div>
+  <% if (result.hasMore) { %>
+    <div class="infinite-scroll-sentinel" id="infinite-scroll-sentinel" data-next-page="<%= result.page + 1 %>">
+      <span class="infinite-scroll-spinner" aria-hidden="true"></span>
+      <span class="sr-only">Loading more products…</span>
+    </div>
+  <% } else if (result.totalItems > result.pageSize) { %>
+    <p class="infinite-scroll-end"><%= result.totalItems %> products total &mdash; you've seen them all.</p>
+  <% } %>
+<% } %>

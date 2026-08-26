@@ -1,0 +1,24 @@
+<%
+/* expects: carouselTitle, carouselProducts, carouselLink (optional) */
+%>
+<section class="home-section">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title"><%= carouselTitle %></h2>
+      <% if (typeof carouselLink !== 'undefined' && carouselLink) { %>
+        <a class="section-link" href="<%= carouselLink %>">View All &rarr;</a>
+      <% } %>
+    </div>
+    <div class="tno-carousel" data-carousel>
+      <button class="carousel-arrow carousel-prev" type="button" aria-label="Previous">&#8249;</button>
+      <div class="carousel-viewport">
+        <div class="carousel-track">
+          <% carouselProducts.forEach(function (p) { %>
+            <div class="carousel-cell"><%- include('product-card', { p: p }) %></div>
+          <% }) %>
+        </div>
+      </div>
+      <button class="carousel-arrow carousel-next" type="button" aria-label="Next">&#8250;</button>
+    </div>
+  </div>
+</section>

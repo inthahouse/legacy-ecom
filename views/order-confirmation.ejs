@@ -1,0 +1,58 @@
+<%- include('partials/head', { bodyClass: 'page-confirmation' }) %>
+<%- include('partials/header') %>
+
+<div class="container">
+  <div class="confirm-hero">
+    <div class="confirm-check">&#10003;</div>
+    <h1>Thanks, your order is in!</h1>
+    <p class="confirm-number">Order <strong><%= order.number %></strong></p>
+    <p>A confirmation email is on its way to <strong><%= order.email %></strong>.<br>
+       We'll let you know when it ships (<%= order.shippingMethod === 'express' ? '1–3' : '2–7' %> business days).</p>
+  </div>
+
+  <div class="confirm-layout">
+    <div class="confirm-lines">
+      <h3>Items (<%= order.lines.length %>)</h3>
+      <% order.lines.forEach(function (l) { %>
+      <div class="checkout-item">
+        <img src="<%= l.image %>" alt="">
+        <div class="checkout-item-info">
+          <% if (l.isGift) { %>
+            <span class="checkout-item-title"><%= l.title %> <span class="badge badge-gift">Gift</span></span>
+          <% } else { %>
+            <a class="checkout-item-title" href="/products/<%= l.slug %>"><%= l.title %></a>
+          <% } %>
+          <span class="checkout-item-meta"><%= l.brand %> &middot; <%= l.color %> / <%= l.size %> &times; <%= l.qty %></span>
+        </div>
+        <span class="checkout-item-price"><% if (l.isGift) { %><span class="price-free">FREE</span><% } else { %><%= fmt(l.lineTotal) %><% } %></span>
+      </div>
+      <% }) %>
+    </div>
+
+    <aside>
+      <div class="summary-box">
+        <h3>Summary</h3>
+        <div class="summary-row"><span>Subtotal</span><span><%= fmt(order.subtotal) %></span></div>
+        <% if (order.discount) { %><div class="summary-row summary-discount"><span>Discount (<%= order.promoCode %>)</span><span>&minus;<%= fmt(order.discount) %></span></div><% } %>
+        <div class="summary-row"><span>Shipping</span><span><%= order.shipping === 0 ? 'FREE' : fmt(order.shipping) %></span></div>
+        <div class="summary-row"><span>Tax</span><span><%= fmt(order.tax) %></span></div>
+        <div class="summary-row summary-total"><span>Total</span><span><%= fmt(order.total) %></span></div>
+      </div>
+      <div class="summary-box">
+        <h3>Shipping To</h3>
+        <p class="confirm-address">
+          <%= order.name %><br>
+          <%= order.shipTo.line1 %><% if (order.shipTo.line2) { %>, <%= order.shipTo.line2 %><% } %><br>
+          <%= order.shipTo.city %>, <%= order.shipTo.region %> <%= order.shipTo.postal %><br>
+          <%= order.shipTo.country === 'US' ? 'United States' : 'Canada' %>
+        </p>
+      </div>
+      <a class="btn btn-primary btn-block" href="/collections/new-arrivals">Continue Shopping</a>
+      <% if (!user) { %>
+        <p class="confirm-register-hint"><a href="/register">Create an account</a> to track this order and check out faster next time.</p>
+      <% } %>
+    </aside>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
