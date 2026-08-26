@@ -3472,7 +3472,7 @@ body.theme-dark .map-pin {
       rgba(161, 80, 44, 0.55) 60%,
       rgba(201, 150, 46, 0.45) 130%
     ),
-    url("/img/hero-new.jpeg") center / cover no-repeat;
+    url("/img/hero-new.avif") center / cover no-repeat;
 }
 .mkt-hero-clearance {
   background: linear-gradient(140deg, #6b2635, #a62639 75%);
