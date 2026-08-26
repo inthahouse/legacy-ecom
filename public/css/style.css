@@ -2147,8 +2147,48 @@ body.theme-dark .hero {
 .pdp-main-img img {
   width: 100%;
 }
-/* carousel viewport/track/slides/arrows: built + styled entirely in
-   product.js now (inline styles), nothing here on purpose */
+.pdp-gallery-viewport {
+  overflow: hidden;
+}
+.pdp-gallery-track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+.pdp-gallery-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+.pdp-gallery-slide img {
+  width: 100%;
+  display: block;
+}
+.pdp-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+}
+.pdp-gallery-arrow:hover {
+  color: var(--accent);
+}
+.pdp-gallery-prev {
+  left: 12px;
+}
+.pdp-gallery-next {
+  right: 12px;
+}
 .pdp-thumbs {
   display: flex;
   gap: 10px;

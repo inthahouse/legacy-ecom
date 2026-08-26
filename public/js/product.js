@@ -19,88 +19,28 @@ $(function () {
 
   if (!currentVariant) currentVariant = PDP_DATA.variants[0];
 
-  /* ---------------- gallery (carousel, entirely JS-built) ----------------
-     no markup or CSS for this in product.ejs/style.css on purpose - the
-     whole viewport/track/slides/arrows get built and inline-styled here,
-     so there's nothing to go dig through a stylesheet for. */
-  function buildGallery(variant) {
-    var $main = $("#pdp-main-img");
-    $main.find("#pdp-gallery-viewport, .pdp-gallery-arrow").remove();
-
-    var $viewport = $("<div>", { id: "pdp-gallery-viewport" }).css({
-      overflow: "hidden",
-    });
-    var $track = $("<div>", { id: "pdp-gallery-track" }).css({
-      display: "flex",
-      transition: "transform 1s ease",
-    });
+  /* ---------------- gallery (carousel) ----------------
+     viewport/track/slides/arrows are rendered server side in product.ejs
+     for the initial variant. On a colour change there's a new set of
+     images to show, so the track's slides get rebuilt here - everything
+     else (nav, transform) reuses the markup already on the page. */
+  function renderGallerySlides(variant) {
+    var $track = $("#pdp-gallery-track").empty();
 
     variant.images.forEach(function (img, i) {
-      var $slide = $("<div>", { class: "pdp-gallery-slide" }).css({
-        flex: "0 0 100%",
-        minWidth: 0,
-      });
+      var $slide = $("<div>", { class: "pdp-gallery-slide" });
       $("<img>")
         .attr({
           src: img,
           alt:
             PDP_DATA.title + " in " + variant.colorName + " — view " + (i + 1),
         })
-        .css({ width: "100%", display: "block" })
         .appendTo($slide);
       $track.append($slide);
     });
 
-    $viewport.append($track);
-    $main.append($viewport);
-
-    var arrowCss = {
-      position: "absolute",
-      top: "50%",
-      transform: "translateY(-50%)",
-      zIndex: 2,
-      width: "38px",
-      height: "38px",
-      borderRadius: "50%",
-      border: "none",
-      background: "var(--panel)",
-      color: "var(--text)",
-      boxShadow: "var(--shadow)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: "18px",
-      cursor: "pointer",
-    };
-
-    var $prev = $("<button>", {
-      type: "button",
-      id: "pdp-gallery-prev",
-      class: "pdp-gallery-arrow",
-      "aria-label": "Previous image",
-      html: "&larr;",
-    }).css($.extend({}, arrowCss, { left: "12px" }));
-
-    var $next = $("<button>", {
-      type: "button",
-      id: "pdp-gallery-next",
-      class: "pdp-gallery-arrow",
-      "aria-label": "Next image",
-      html: "&rarr;",
-    }).css($.extend({}, arrowCss, { right: "12px" }));
-
-    $prev
-      .add($next)
-      .on("mouseenter", function () {
-        $(this).css("color", "var(--accent)");
-      })
-      .on("mouseleave", function () {
-        $(this).css("color", "var(--text)");
-      });
-
-    $main.append($prev, $next);
-
     currentSlideIndex = 0;
+    $track.css("transform", "translateX(0)");
   }
 
   function goToSlide(index) {
@@ -118,20 +58,16 @@ $(function () {
     $(".pdp-thumb").removeClass("is-active").eq(index).addClass("is-active");
   }
 
-  setTimeout(() => {
-    buildGallery(currentVariant);
-  }, 1000);
-
+  // thumbs are rebuilt on every colour change, so delegate rather than
+  // binding directly to elements that get replaced
   $(document).on("click", ".pdp-thumb", function () {
     goToSlide($(".pdp-thumb").index(this));
   });
 
-  // arrows are rebuilt on every colour change, so delegate rather than
-  // binding directly to elements that might not exist yet
-  $(document).on("click", "#pdp-gallery-next", function () {
+  $("#pdp-gallery-next").on("click", function () {
     goToSlide(currentSlideIndex + 1);
   });
-  $(document).on("click", "#pdp-gallery-prev", function () {
+  $("#pdp-gallery-prev").on("click", function () {
     goToSlide(currentSlideIndex - 1);
   });
 
@@ -153,9 +89,9 @@ $(function () {
     $(this).addClass("is-active");
     $("#pdp-color-name").text(variant.colorName);
 
-    // new colour means an entirely new image set - rebuild the gallery from
-    // scratch rather than trying to slide the existing one to match
-    buildGallery(variant);
+    // new colour means an entirely new image set - rebuild the slides
+    // rather than trying to slide the existing ones to match
+    renderGallerySlides(variant);
 
     var $thumbs = $("#pdp-thumbs").empty();
 

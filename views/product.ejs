@@ -12,11 +12,19 @@
 
     <!-- ======== GALLERY ======== -->
     <div class="pdp-gallery">
-      <!-- the carousel itself (viewport/track/slides/arrows) is built
-           entirely by product.js from PDP_DATA - nothing to render here but
-           the badge and a mount point -->
       <div class="pdp-main-img" id="pdp-main-img">
         <% if (product.onSale) { %><span class="badge badge-sale">Sale</span><% } %>
+        <div class="pdp-gallery-viewport" id="pdp-gallery-viewport">
+          <div class="pdp-gallery-track" id="pdp-gallery-track">
+            <% variant.images.forEach(function (img, i) { %>
+              <div class="pdp-gallery-slide">
+                <img src="<%= img %>" alt="<%= product.title %> in <%= variant.colorName %> — view <%= i + 1 %>">
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <button type="button" id="pdp-gallery-prev" class="pdp-gallery-arrow pdp-gallery-prev" aria-label="Previous image">&larr;</button>
+        <button type="button" id="pdp-gallery-next" class="pdp-gallery-arrow pdp-gallery-next" aria-label="Next image">&rarr;</button>
       </div>
       <div class="pdp-thumbs" id="pdp-thumbs">
         <% variant.images.forEach(function (img, i) { %>
