@@ -1,0 +1,26 @@
+<%
+/* Sync the saved grid/list view preference onto the toolbar/grid that was
+   just parsed above, inline and synchronously - not deferred to main.js,
+   which only runs once everything at the bottom of the page has loaded.
+   Without this, the page always paints the server-rendered default (grid)
+   first and visibly snaps to the saved view a beat later. Mirrors
+   tnoInitViewToggle's apply() in main.js, which still runs later to wire
+   up the click handling and to re-sync after ajax filter/page swaps. */
+%>
+<script>
+  (function () {
+    var $scope = $(document.currentScript).closest('#collection-results, #wishlist-results');
+    var view;
+    try {
+      view = localStorage.getItem('tno_view');
+    } catch (e) {
+      view = null; // private mode
+    }
+    if (view !== 'grid-4' && view !== 'list') return; // nothing saved (or invalid) - grid is already what's rendered
+    $scope.addClass('view-' + view);
+    $scope.find('.js-view-toggle').each(function () {
+      var isActive = $(this).data('view') === view;
+      $(this).toggleClass('is-active', isActive).attr('aria-pressed', String(isActive));
+    });
+  })();
+</script>

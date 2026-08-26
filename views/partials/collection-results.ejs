@@ -36,6 +36,8 @@
   </div>
 </div>
 
+<%- include('view-mode-init') %>
+
 <% var hasFilters = result.selected.brands.length || result.selected.colors.length || result.selected.sizes.length || result.selected.priceMin != null || result.selected.priceMax != null; %>
 <% if (hasFilters) { %>
 <div class="active-chips">

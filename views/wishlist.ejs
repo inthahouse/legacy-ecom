@@ -26,6 +26,9 @@
           </button>
         </div>
       </div>
+
+      <%- include('partials/view-mode-init') %>
+
       <div class="product-grid wishlist-grid">
         <% items.forEach(function (p) { %>
           <%- include('partials/product-card', { p: p }) %>

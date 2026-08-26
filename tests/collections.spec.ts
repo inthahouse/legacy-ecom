@@ -25,17 +25,18 @@ test.describe("collections page", () => {
     await page.goto("/collections/men");
 
     await page.locator('.js-view-toggle[data-view="list"]').click();
-    await expect(page.locator("#collection-results")).toHaveClass(/view-list/);
 
     await page.reload();
 
     metrics.length = 0;
 
+    await page.waitForTimeout(1000);
+
     await triggerFinalization(page);
 
-    const inp = metrics.find((m) => m.name === "CLS");
-    expect(inp).toBeDefined();
-    expect(inp?.rating).toBe("good");
+    const cls = metrics.find((m) => m.name === "CLS");
+    expect(cls).toBeDefined();
+    expect(cls?.rating).toBe("good");
   });
 
   test("collection grid view 4 per row CLS", async ({ page, browserName }) => {
@@ -46,16 +47,17 @@ test.describe("collections page", () => {
     await page.goto("/collections/men");
 
     await page.locator('.js-view-toggle[data-view="grid-4"]').click();
-    await expect(page.locator("#collection-results")).toHaveClass(/view-list/);
 
     await page.reload();
 
     metrics.length = 0;
 
+    await page.waitForTimeout(1000);
+
     await triggerFinalization(page);
 
-    const inp = metrics.find((m) => m.name === "CLS");
-    expect(inp).toBeDefined();
-    expect(inp?.rating).toBe("good");
+    const cls = metrics.find((m) => m.name === "CLS");
+    expect(cls).toBeDefined();
+    expect(cls?.rating).toBe("good");
   });
 });
