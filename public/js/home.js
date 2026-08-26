@@ -42,11 +42,4 @@ $(function () {
       }, 4000);
     });
   }
-
-  var $heroCards = $(".hero-card");
-  if ($heroCards.length) {
-    $(window).on("load", function () {
-      $heroCards.css("margin", "3rem");
-    });
-  }
 });

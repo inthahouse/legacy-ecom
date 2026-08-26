@@ -5,6 +5,7 @@
 const express = require("express");
 const router = express.Router();
 const catalog = require("../data/catalog");
+const blog = require("../data/blog");
 const listing = require("../lib/listing");
 const util = require("../lib/util");
 
@@ -44,6 +45,7 @@ router.get("/", function (req, res) {
     newArrivals: newArrivals,
     bestSellers: bestSellers,
     saleItems: saleItems,
+    blogPosts: blog.posts.slice(0, 3),
   });
 });
 

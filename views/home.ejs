@@ -31,6 +31,33 @@
   </div>
 </div>
 
+<!-- from the blog -->
+<% if (blogPosts && blogPosts.length) { %>
+<section class="home-section">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">From the Blog</h2>
+      <a class="section-link" href="/blog">View All &rarr;</a>
+    </div>
+    <div class="blog-row">
+      <% blogPosts.forEach(function (p) { %>
+        <div class="blog-card">
+          <a class="blog-card-media" href="/blog/<%= p.slug %>">
+            <img src="<%= p.coverImage %>" alt="<%= p.title %>" loading="lazy">
+            <span class="blog-card-category"><%= p.category %></span>
+          </a>
+          <div class="blog-card-body">
+            <a class="blog-card-title" href="/blog/<%= p.slug %>"><%= p.title %></a>
+            <p class="blog-card-excerpt"><%= p.excerpt %></p>
+            <div class="blog-card-meta"><%= p.author %> &middot; <%= p.readMinutes %> min read</div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
 <!-- dept tiles -->
 <section class="home-section">
   <div class="container">

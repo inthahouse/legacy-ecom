@@ -8,7 +8,6 @@
 const express = require("express");
 const router = express.Router();
 const catalog = require("../data/catalog");
-const blog = require("../data/blog");
 const cartLib = require("../lib/cart");
 const sizeGuide = require("../lib/sizeGuide");
 
@@ -124,12 +123,6 @@ router.get("/cart/summary", function (req, res) {
 // ---- full product list (client-side stock check on checkout) ----
 router.get("/products", function (req, res) {
   res.json(catalog.products);
-});
-
-// ---- blog posts (JSON, not a rendered fragment - the homepage "From the
-// Blog" row builds its own cards client side, see public/js/blog.js) ----
-router.get("/blog/posts", function (req, res) {
-  res.json(blog.posts);
 });
 
 // ---- shipping method (checkout radios post here, summary re-renders) ----
