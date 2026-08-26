@@ -15,6 +15,9 @@
   <header class="collection-head">
     <h1><%= collection.name %></h1>
     <% if (collection.blurb) { %><p class="collection-blurb"><%= collection.blurb %></p><% } %>
+    <% if (typeof saleCountdownText !== 'undefined' && saleCountdownText) { %>
+      <p class="sale-countdown">Hurry, while it lasts! Sale ends in <span class="sale-countdown-value" id="sale-countdown-value" data-deadline="<%= saleEndsAt %>"><%= saleCountdownText %></span></p>
+    <% } %>
   </header>
 
   <div class="collection-layout">

@@ -20,14 +20,13 @@ $(function () {
 
   /* ---------------- sale countdown ----------------
      "hurry, while it lasts" timer under the blurb on the Sale collection
-     page. moment is loaded globally in head.ejs. */
-  if (baseUrl === '/collections/sale') {
-    var saleDeadline = moment().add(10, 'days');
-    var $saleTimer = $(
-      '<p class="sale-countdown">Hurry, while it lasts! Sale ends in <span class="sale-countdown-value"></span></p>'
-    );
-    $('.collection-blurb').after($saleTimer);
-    var $saleTimerValue = $saleTimer.find('.sale-countdown-value');
+     page. Markup + the initial value are rendered server side in
+     collection.ejs (data-deadline carries the target as an ISO string);
+     this just ticks the existing element down every second.
+     moment is loaded globally in head.ejs. */
+  var $saleTimerValue = $('#sale-countdown-value');
+  if ($saleTimerValue.length) {
+    var saleDeadline = moment($saleTimerValue.data('deadline'));
 
     (function tickSaleTimer() {
       var remaining = moment.duration(saleDeadline.diff(moment()));

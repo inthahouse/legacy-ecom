@@ -29,11 +29,6 @@ test.describe("collections page", () => {
 
     await page.reload();
 
-    // the reload's unload fires web-vitals' own CLS report for the
-    // pre-reload page (via pagehide), which would otherwise beat the
-    // finalized metric below to the front of the array - drop it so the
-    // assertion below reflects the reloaded (list view) page, not the one
-    // we navigated away from
     metrics.length = 0;
 
     await triggerFinalization(page);

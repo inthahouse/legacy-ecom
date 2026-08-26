@@ -105,6 +105,15 @@ router.get("/collections/:slug", function (req, res, next) {
   if (req.query.ajax === "1") {
     return res.render("partials/collection-results", viewData);
   }
+
+  // "hurry, while it lasts" timer under the blurb - Sale page only. Deadline
+  // is always "now + 10 days", recomputed on every request.
+  if (col.slug === "sale") {
+    var saleEndsAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
+    viewData.saleEndsAt = saleEndsAt.toISOString();
+    viewData.saleCountdownText = util.formatCountdown(saleEndsAt - Date.now());
+  }
+
   res.render("collection", viewData);
 });
 
