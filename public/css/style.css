@@ -1684,6 +1684,15 @@ body.theme-dark .hero {
   width: 250px;
   flex-shrink: 0;
 }
+@media (min-width: 901px) {
+  .filter-sidebar {
+    position: sticky;
+    top: 130px;
+    max-height: calc(100dvh - 146px);
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+}
 .collection-main {
   flex: 1;
   min-width: 0;
