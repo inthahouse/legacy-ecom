@@ -103,7 +103,7 @@ $(function () {
     var bad = false;
 
     $form.find('input[required], select[required]').each(function () {
-      if (!$.trim($(this).val())) {
+      if (!String($(this).val() ?? '').trim()) {
         setError($(this), 'Required');
         bad = true;
       }

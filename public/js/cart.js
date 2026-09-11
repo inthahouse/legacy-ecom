@@ -14,7 +14,7 @@ $(function () {
       success: function (res) {
         // gift promo may have kicked in/out - stash so main.js can toast
         // about it on the other side of the reload
-        if (res && res.giftEvent && $.isFunction(window.tnoStashGiftEvent)) {
+        if (res && res.giftEvent && typeof window.tnoStashGiftEvent === "function") {
           tnoStashGiftEvent(res.giftEvent);
         }
       },

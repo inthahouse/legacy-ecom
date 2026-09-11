@@ -6,7 +6,7 @@
    ============================================================================ */
 
 $(function () {
-  if ($.type(STORE_DATA) === "undefined") return;
+  if (typeof STORE_DATA === "undefined") return;
 
   var stores = STORE_DATA;
   var selectedId = null;
@@ -63,7 +63,7 @@ $(function () {
   }
 
   function currentFilter() {
-    var q = $.trim($("#store-search").val()).toLowerCase();
+    var q = String($("#store-search").val() ?? "").trim().toLowerCase();
     var country = $("#store-country").val();
     var region = $("#store-region").val();
 
