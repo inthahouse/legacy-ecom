@@ -1,5 +1,5 @@
 {
-  "name": "ecom2",
+  "name": "legacy-ecom",
   "version": "1.0.0",
   "description": "True North Outfitters - storefront demo (express + ejs + jquery, in-memory data)",
   "main": "server.js",

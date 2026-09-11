@@ -181,7 +181,7 @@ $(function () {
     var stashedRemoved = sessionStorage.getItem("tno_checkout_removed");
     if (stashedRemoved) {
       sessionStorage.removeItem("tno_checkout_removed");
-      var removedTitles = JSON.parse(stashedRemoved);
+      var removedTitles = $.parseJSON(stashedRemoved);
       tnoToast(
         "<strong>Heads up:</strong> " +
           removedTitles.join(", ") +
@@ -379,7 +379,7 @@ $(function () {
       error: function (xhr) {
         var msg = "Could not add to cart.";
         try {
-          msg = JSON.parse(xhr.responseText).error || msg;
+          msg = $.parseJSON(xhr.responseText).error || msg;
         } catch (e) {}
         tnoToast(msg, "error");
       },
@@ -511,7 +511,7 @@ $(function () {
   function getCookieConsent() {
     try {
       var raw = localStorage.getItem(COOKIE_CONSENT_KEY);
-      return raw ? JSON.parse(raw) : null;
+      return raw ? $.parseJSON(raw) : null;
     } catch (e) {
       return null; // private mode / storage disabled
     }
@@ -521,7 +521,7 @@ $(function () {
     try {
       localStorage.setItem(
         COOKIE_CONSENT_KEY,
-        JSON.stringify({ status: status, ts: Date.now() }),
+        JSON.stringify({ status: status, ts: $.now() }),
       );
     } catch (e) {
       /* private mode */

@@ -4,7 +4,7 @@
    ============================================================================ */
 
 $(function () {
-  if (typeof PDP_DATA === "undefined") return;
+  if ($.type(window.PDP_DATA) === "undefined") return;
 
   let currentVariant = null;
   let selectedSku = null;
